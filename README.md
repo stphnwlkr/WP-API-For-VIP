@@ -1,4 +1,4 @@
-<img width="1520" alt="image" src="https://github.com/stphnwlkr/WP-API-For-VIP/assets/1405187/1b0e0929-1092-452f-b94b-83eb428a402c">
+<img width="1520" alt=" screenshot from the Department of Veterans Affairs usage of this plugin" src="https://github.com/stphnwlkr/WP-API-For-VIP/assets/1405187/1b0e0929-1092-452f-b94b-83eb428a402c">
 
 # API Element
  A shortcode that pulls articles using the WP API. Sample CSS is provided. The CSS needs to be reworked to combine both layouts in a single API request.

@@ -17,6 +17,10 @@ Add option to receive a single post by slug
 * Added Tags to the list of query options
 * Added an optional link_target option
 * Added custom link_aria_label
+## Version 1.7
+* Added cat_exclude to exclude categories
+* Added second shortcode to output a list of category names and IDs
+
  ## Parameter
 
 * endpoint: Set the source (required)
@@ -24,6 +28,8 @@ Add option to receive a single post by slug
 * offset: Set an offset (start at article 5) - default is 0
 * heading_level: Set the heading level (h2-h4) - default is h2
 * category: Choose a category (requires cat ID) - default is none
+* cat_exclude: exclude categories from the request
+* tag: list of tags to include
 * post_type: Choose a post type (requires post type slug) - default is post
 * Whether to show image, category, excerpt, or date - all are visible by default*   
     - show_category
@@ -31,12 +37,16 @@ Add option to receive a single post by slug
     - show_date
     - show_img
 * article_class: Add layout modifier - default is none
+* link_target: primarily to add _blank
+* link_aria_label: add a cusom aria-label especially if the link opens a new window
 
 
 ## Shortcode
 
-- [api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes" category="2" heading_level="h2"] 
-- echo do_shortcode('[api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes"]');
+* [api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes" category="2" heading_level="h2"] 
+* echo do_shortcode('[api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes"]');
 
+### Category List
+* [fetch_categories endpoint="https://your-wordpress-site.com"]
 # Disclaimer
 This code is provided as is. Every attempt has been made to provide good code, but there is no expressed warranty or guarantee. Test the code prior to using it on a production site.

@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP API Articles
 Description: Retrieves the latest articles from a specified WordPress API endpoint.
-Version: 1.5.1
+Version: 1.7
 Author: Stephen Walker
 */
 
@@ -23,6 +23,7 @@ function api_articles_shortcode($atts) {
         'show_date' => 'yes',
         'show_category' => 'yes',
         'category' => '',
+        'cat_exclude' => '',
         'tag' => '',
         'heading_level' => 'h2',
         'show_img' => 'yes',
@@ -46,6 +47,10 @@ function api_articles_shortcode($atts) {
     if (!empty($args['category'])) {
         $category_query = "&categories={$args['category']}";
     }
+    $category_exclude_query = '';
+    if (!empty($args['cat_exclude'])) {
+        $category_exclude_query = "&categories_exclude={$args['cat_exclude']}";
+    }
     $tag_query = '';
     if (!empty($args['tag'])) {
         $tag_query = "&tags={$args['tag']}";
@@ -54,7 +59,7 @@ function api_articles_shortcode($atts) {
     if (!empty($args['post_slug'])) {
         $response = vip_safe_wp_remote_get("{$args['endpoint']}/wp-json/wp/v2/{$args['post_type']}?_embed&slug={$args['post_slug']}");
     } else {
-        $response = vip_safe_wp_remote_get("{$args['endpoint']}/wp-json/wp/v2/{$args['post_type']}?_embed&per_page={$args['count']}&offset={$args['offset']}{$category_query}{$tag_query}");
+        $response = vip_safe_wp_remote_get("{$args['endpoint']}/wp-json/wp/v2/{$args['post_type']}?_embed&per_page={$args['count']}&offset={$args['offset']}{$category_query}{$category_exclude_query}{$tag_query}");
     }
 
     if (is_wp_error($response)) {
@@ -126,3 +131,40 @@ function api_articles_shortcode($atts) {
 
 
 add_shortcode('api_articles', 'api_articles_shortcode');
+
+// retrieve categories
+
+function fetch_categories_from_endpoint($atts) {
+    $a = shortcode_atts(array(
+        'endpoint' => '',
+    ), $atts);
+
+    if (!$a['endpoint']) return 'No endpoint provided!';
+
+    $paged = (get_query_var('paged')) ? absint(get_query_var('paged')) : 1;
+    $response = vip_safe_wp_remote_get($a['endpoint'] . '/wp-json/wp/v2/categories?per_page=100&page=' . $paged);
+
+    if (is_wp_error($response)) return 'Error fetching categories.';
+
+    $categories = json_decode(wp_remote_retrieve_body($response), true);
+    if (empty($categories)) return 'No categories found.';
+
+    $output = '<ol>';
+    foreach ($categories as $category) {
+        $output .= '<li>' . esc_html($category['name']) . ' (' . intval($category['id']) . ')</li>';
+    }
+    $output .= '</ol>';
+
+    // Pagination
+    $total_pages = intval(wp_remote_retrieve_header($response, 'x-wp-totalpages'));
+    if ($paged > 1) {
+        $output .= '<a href="' . get_permalink() . '?paged=' . ($paged - 1) . '">Previous</a>';
+    }
+    if ($paged < $total_pages) {
+        $output .= ' <a href="' . get_permalink() . '?paged=' . ($paged + 1) . '">Next</a>';
+    }
+
+    return $output;
+}
+
+add_shortcode('fetch_categories', 'fetch_categories_from_endpoint');

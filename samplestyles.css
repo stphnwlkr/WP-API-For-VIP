@@ -1,0 +1,202 @@
+:root {
+    /* These are my styles from Bricks + ACSS */
+    --text-xs: clamp(0.6875rem, calc(0vw + 0.6875rem), 0.6875rem);
+    --text-s: clamp(0.75rem, calc(0vw + 0.75rem), 0.75rem);
+    --text-m: clamp(1rem, calc(0.3125vw + 0.9375rem), 1.25rem);
+    --text-l: clamp(1.2rem, calc(0.5828125vw + 1.0834375rem), 1.66625rem);
+    --text-xl: clamp(1.44rem, calc(0.9763890625vw + 1.2447221875rem), 2.22111125rem);
+    --text-xxl: clamp(1.728rem, calc(1.5409266203vw + 1.4198146759rem), 2.9607412963rem);
+    --h6: clamp(0.6875rem, calc(0vw + 0.6875rem), 0.6875rem);
+    --h5: clamp(0.75rem, calc(0vw + 0.75rem), 0.75rem);
+    --h4: clamp(1rem, calc(0.625vw + 0.875rem), 1.5rem);
+    --h3: clamp(1.2rem, calc(1.3125vw + 0.9375rem), 2.25rem);
+    --h2: clamp(1.44rem, calc(2.41875vw + 0.95625rem), 3.375rem);
+    --h1: clamp(1.728rem, calc(4.168125vw + 0.894375rem), 5.0625rem);
+  --space-xs: clamp(0.6666666667rem, calc(0.2083333333vw + 0.625rem), 0.8333333333rem);
+    --space-s: clamp(1rem, calc(0.3125vw + 0.9375rem), 1.25rem);
+    --space-m: clamp(1.5rem, calc(0.46875vw + 1.40625rem), 1.875rem);
+    --space-l: clamp(1.9995rem, calc(1.01625vw + 1.79625rem), 2.8125rem);
+    --space-xl: clamp(2.6653335rem, calc(1.941770625vw + 2.276979375rem), 4.21875rem);
+    --space-xxl: clamp(3.5528895555rem, calc(3.4690443056vw + 2.8590806944rem), 6.328125rem);
+    --section-space-xs: clamp(2rem, calc(1.6666666667vw + 1.6666666667rem), 3.3333333333rem);
+    --section-space-s: clamp(3rem, calc(2.5vw + 2.5rem), 5rem);
+    --section-space-m: clamp(4.5rem, calc(3.75vw + 3.75rem), 7.5rem);
+    --section-space-l: clamp(5.9985rem, calc(6.564375vw + 4.685625rem), 11.25rem);
+    --section-space-xl: clamp(7.9960005rem, calc(11.098749375vw + 5.776250625rem), 16.875rem);
+    --section-space-xxl: clamp(10.6586686665rem, calc(18.3172891669vw + 6.9952108331rem), 25.3125rem);
+    --section-padding-x: clamp(1.5rem, calc(0.46875vw + 1.40625rem), 1.875rem);
+}
+/* This CSS is used to emulate the new NASA news layout */
+/* Four post grid */
+.post-cards-grid {
+    list-style: none;
+    padding: 0 !important;
+    margin:0;
+        display:grid;
+  }
+  @media(min-width:991px){
+    .post-cards-grid  {
+    grid-template-columns:repeat(12,1fr);
+    grid-template-rows:1fr 1fr;
+    gap:clamp(1rem, 0.446vw + 0.857rem, 1.5rem);
+  }
+  .post-cards-grid  li:first-of-type{
+  grid-area: 1 / 1 / 3 / 6;
+  }
+  .post-cards-grid  li:nth-of-type(2){
+  grid-area: 1 / 6 / 3 /10; 
+  }
+  .post-cards-grid  li:nth-of-type(3){
+  grid-area: 1 / 10 / 1 / 13
+  }
+  .post-cards-grid  li:nth-of-type(4){
+  grid-area: 2 / 10 / 2 / 13;
+    }
+  }
+  @media(767px <= width <= 991px){
+   .post-cards-grid  {
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr;
+  gap:1rem;
+  }
+  }
+    @media(width <= 767px){
+   .post-cards-grid {
+    grid-template-columns:1fr;
+    grid-template-rows:1fr;
+  gap:1rem;
+  }}
+  .post-cards-grid  .api-article{
+    flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      padding-top: 0;
+      padding-right: 0;
+      padding-bottom: 0;
+      padding-left: 0;
+      min-height: 260px;
+      isolation: isolate;
+  }
+  .post-cards-grid  .news-card{
+   display: flex;
+      z-index: 1;
+      flex-wrap: nowrap;
+      flex-direction: column;
+      justify-content:flex-end;
+      height: 100%;
+  }
+  .post-cards-grid .news-card__img-wrapper {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      margin: 0;
+  }
+  
+  .post-cards-grid .news-card__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
+  
+  .post-cards-grid .news-card__content-wrapper {
+      background: rgba(0, 0, 0, 0.6); /* This is the overlay */
+      color: white;
+      padding: var(--space-s);
+      z-index: 1;
+     height: 100%;
+     display: flex;
+     flex-direction: column;
+     justify-content:flex-end;
+     
+  }
+  
+  .post-cards-grid .news-card__title {
+      margin: 0 0 10px;
+    font-size: var(--text-l);
+    font-family:var(--sans);
+    font-weight:700;
+  }
+  
+  .post-cards-grid .news-card__link {
+      color: white;
+      text-decoration: none;
+  }
+  
+  .post-cards-grid .news-card__meta-wrapper {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 0 10px;
+  }
+  .small-grid {
+    list-style: none;
+    padding: 0 !important;
+    margin:0;
+    display:grid;
+  }
+  @media(min-width:991px){
+    .small-grid  {
+    grid-template-columns:repeat(4,1fr);
+    gap:clamp(1rem, 0.446vw + 0.857rem, 1.5rem);
+  }
+  }
+  @media(767px <= width <= 991px){
+   .small-grid  {
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr;
+  gap:1rem;
+  }
+  }
+    @media(width <= 767px){
+   .small-grid {
+    grid-template-columns:1fr;
+    grid-template-rows:1fr;
+  gap:1rem;
+  }}
+  /* four post with circular featured image */
+  .small-grid  .news-card{
+   display: grid;
+   gap: 1rem;
+   grid-template-columns: 1fr 3fr;
+  }
+  .small-grid .news-card__img-wrapper {
+     width: 75px;
+     height: 75px;
+    align-self:center;
+    grid-row:1;
+    
+  }
+  
+  .small-grid .news-card__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+         aspect-ratio: 1/1;
+     border-radius: 99rem;
+  }
+  
+  .small-grid .news-card__content-wrapper {
+      padding: var(--space-s);
+     display: flex;
+     flex-direction: column;
+     justify-content:flex-end;
+     flex-grow: 3;
+     
+  }
+  
+  .small-grid .news-card__title {
+      margin: 0 0 10px;
+    font-size: var(--text-m);
+      font-family:var(--sans);
+    font-weight:600;
+  }
+  
+  .small-grid .news-card__meta-wrapper {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 0 10px;
+  }
+  
+  .news-card__date, .news-card__category, .news-card__excerpt {
+      margin: 0;
+  }
+  

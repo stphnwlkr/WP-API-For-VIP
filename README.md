@@ -20,7 +20,9 @@ Add option to receive a single post by slug
 ## Version 1.7
 * Added cat_exclude to exclude categories
 * Added second shortcode to output a list of category names and IDs
-
+## Version 1.8
+* Retrieve custom post types and slugs
+* Retrieve custom taxonomy names and slugs (this is of little benefit yet until functionality is addded to filter by custom taxonomy values)
  ## Parameter
 
 * endpoint: Set the source (required)

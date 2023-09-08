@@ -23,6 +23,10 @@ Add option to receive a single post by slug
 ## Version 1.8
 * Retrieve custom post types and slugs
 * Retrieve custom taxonomy names and slugs (this is of little benefit yet until functionality is addded to filter by custom taxonomy values)
+## Version 1.9
+* add order by and order direction parameters
+* add custom taxonomy and custom taxonomy value parameter
+* add shortcode to retrieve custom taxonomy terms based on custom taxonomy slug
  ## Parameter
 
 * endpoint: Set the source (required)

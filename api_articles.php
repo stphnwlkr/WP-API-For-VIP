@@ -1,15 +1,20 @@
 <?php
 /*
-Plugin Name: WP API Articles
-Description: Retrieves the latest articles from a specified WordPress API endpoint.
-Version: 1.7
-Author: Stephen Walker
+* Plugin Name: WP API Articles
+* Description: Retrieves the latest articles from a specified WordPress API endpoint.
+* Version: 1.8
+* Plugin URI: https://github.com/stphnwlkr/WP-API-Plugin
+* Requires at least: 6.0
+* Requires PHP:      8.0
+* Author: Stephen Walker
 */
 
 // Ensure the plugin is only executed within WordPress.
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// Get articles
 
 function api_articles_shortcode($atts) {
    
@@ -141,7 +146,7 @@ function fetch_categories_from_endpoint($atts) {
 
     if (!$a['endpoint']) return 'No endpoint provided!';
 
-    $paged = (get_query_var('paged')) ? absint(get_query_var('paged')) : 1;
+    $paged = (isset($_GET['catpaged']) && $_GET['catpaged'] > 0) ? absint($_GET['catpaged']) : 1;
     $response = vip_safe_wp_remote_get($a['endpoint'] . '/wp-json/wp/v2/categories?per_page=100&page=' . $paged);
 
     if (is_wp_error($response)) return 'Error fetching categories.';
@@ -157,14 +162,122 @@ function fetch_categories_from_endpoint($atts) {
 
     // Pagination
     $total_pages = intval(wp_remote_retrieve_header($response, 'x-wp-totalpages'));
+    $current_url = add_query_arg(null, null);
+    $current_url = remove_query_arg('catpaged', $current_url);
+
     if ($paged > 1) {
-        $output .= '<a href="' . get_permalink() . '?paged=' . ($paged - 1) . '">Previous</a>';
+        $output .= '<a href="' . esc_url(add_query_arg('catpaged', ($paged - 1), $current_url)) . '">Previous</a>';
     }
     if ($paged < $total_pages) {
-        $output .= ' <a href="' . get_permalink() . '?paged=' . ($paged + 1) . '">Next</a>';
+        $output .= ' <a href="' . esc_url(add_query_arg('catpaged', ($paged + 1), $current_url)) . '">Next</a>';
     }
 
     return $output;
 }
 
 add_shortcode('fetch_categories', 'fetch_categories_from_endpoint');
+
+// Get tags
+
+function fetch_tags_from_endpoint($atts) {
+    $a = shortcode_atts(array(
+        'endpoint' => '',
+    ), $atts);
+
+    if (!$a['endpoint']) return 'No endpoint provided!';
+
+    $paged = (isset($_GET['tagpaged']) && $_GET['tagpaged'] > 0) ? absint($_GET['tagpaged']) : 1;
+    $response = vip_safe_wp_remote_get($a['endpoint'] . '/wp-json/wp/v2/tags?per_page=100&page=' . $paged);
+
+    if (is_wp_error($response)) return 'Error fetching tags.';
+
+    $tags = json_decode(wp_remote_retrieve_body($response), true);
+    if (empty($tags)) return 'No tags found.';
+
+    $output = '<ol>';
+    foreach ($tags as $tag) {
+        $output .= '<li>' . esc_html($tag['name']) . ' (' . intval($tag['id']) . ')</li>';
+    }
+    $output .= '</ol>';
+
+    // Pagination
+    $total_pages = intval(wp_remote_retrieve_header($response, 'x-wp-totalpages'));
+    $current_url = add_query_arg(null, null);
+    $current_url = remove_query_arg('tagpaged', $current_url);
+
+    if ($paged > 1) {
+        $output .= '<a href="' . esc_url(add_query_arg('tagpaged', ($paged - 1), $current_url)) . '">Previous</a>';
+    }
+    if ($paged < $total_pages) {
+        $output .= ' <a href="' . esc_url(add_query_arg('tagpaged', ($paged + 1), $current_url)) . '">Next</a>';
+    }
+
+    return $output;
+}
+
+add_shortcode('fetch_tags', 'fetch_tags_from_endpoint');
+
+// Get custom post types
+
+function fetch_custom_post_types($atts) {
+    $a = shortcode_atts(array(
+        'endpoint' => '',
+    ), $atts);
+
+    if (!$a['endpoint']) return 'No endpoint provided!';
+
+    $response = vip_safe_wp_remote_get($a['endpoint'] . '/wp-json/wp/v2/types');
+
+    if (is_wp_error($response)) return 'Error fetching custom post types.';
+
+    $types = json_decode(wp_remote_retrieve_body($response), true);
+    
+    // Filter out built-in post types
+    $exclude_builtin = array('post', 'page', 'attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'oembed_cache', 'user_request', 'wp_block');
+    $custom_types = array_diff_key($types, array_flip($exclude_builtin));
+
+    if (empty($custom_types)) return 'No custom post types found.';
+
+    $output = '<ul>';
+    foreach ($custom_types as $slug => $type) {
+        $output .= '<li>' . esc_html($type['name']) . ' (' . esc_html($slug) . ')</li>';
+    }
+    $output .= '</ul>';
+
+    return $output;
+}
+
+add_shortcode('fetch_cpts', 'fetch_custom_post_types');
+
+// Get taxonomies
+
+function fetch_custom_taxonomies($atts) {
+    $a = shortcode_atts(array(
+        'endpoint' => '',
+    ), $atts);
+
+    if (!$a['endpoint']) return 'No endpoint provided!';
+
+    $response = vip_safe_wp_remote_get($a['endpoint'] . '/wp-json/wp/v2/taxonomies');
+
+    if (is_wp_error($response)) return 'Error fetching custom taxonomies.';
+
+    $taxonomies = json_decode(wp_remote_retrieve_body($response), true);
+
+    // Filter out built-in taxonomies
+    $exclude_builtin = array('category', 'post_tag', 'nav_menu', 'link_category', 'post_format');
+    $custom_taxonomies = array_diff_key($taxonomies, array_flip($exclude_builtin));
+
+    if (empty($custom_taxonomies)) return 'No custom taxonomies found.';
+
+    $output = '<ul>';
+    foreach ($custom_taxonomies as $slug => $taxonomy) {
+        $output .= '<li>' . esc_html($taxonomy['name']) . ' (' . esc_html($slug) . ')</li>';
+    }
+    $output .= '</ul>';
+
+    return $output;
+}
+
+add_shortcode('fetch_taxonomies', 'fetch_custom_taxonomies');
+

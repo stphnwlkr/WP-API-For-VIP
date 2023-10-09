@@ -1,4 +1,3 @@
-
 <?php
 
 // Ensure the plugin is only executed within WordPress.

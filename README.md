@@ -30,7 +30,8 @@ Add option to receive a single post by slug
 * add shortcode to retrieve custom taxonomy terms based on custom taxonomy slug
 ## Version 2.0
 * restructured the code
-
+## Version 2.1
+* add error message for cURL timeout issue
  ## Parameter
 
 * endpoint: Set the source (required)

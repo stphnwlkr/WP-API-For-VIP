@@ -1,13 +1,11 @@
 <?php
 
 // Ensure the plugin is only executed within WordPress.
-
 if (!defined('ABSPATH')) {
     exit;
 }
 
 function api_articles_shortcode($atts) {
-   
     $args = shortcode_atts(array(
         'endpoint' => '',
         'count'=> 6,
@@ -23,7 +21,7 @@ function api_articles_shortcode($atts) {
         'heading_level' => 'h2',
         'show_img' => 'yes',
         'article_class' => '',
-		'date_format_type' => 'human',
+        'date_format_type' => 'human',
         'post_slug' => '',
         'link_target' => '',  // e.g. '_blank' for a new tab
         'link_aria_label' => '',
@@ -56,7 +54,7 @@ function api_articles_shortcode($atts) {
     }
 
     $order_query = "&orderby={$args['order_by']}&order={$args['order_direction']}";
-    
+
     $taxonomy_query = '';
     if (!empty($args['taxonomy_name']) && !empty($args['taxonomy_value'])) {
         $taxonomy_query = "&{$args['taxonomy_name']}={$args['taxonomy_value']}"; 
@@ -73,8 +71,13 @@ function api_articles_shortcode($atts) {
         return 'Error: ' . $response->get_error_message();
     }
 
-    $response_code = wp_remote_retrieve_response_code($response);
+    // Check for cURL errors
+    $http_code = wp_remote_retrieve_response_code($response);
+    if ($http_code == 0) {
+        return 'Please refresh your browser to see the latest stories.';
+    }
 
+    $response_code = wp_remote_retrieve_response_code($response);
     if ($response_code != 200) {
         return 'There is a problem and we are now working on it. HTTP Response Code: ' . $response_code;
     }
@@ -96,13 +99,13 @@ function api_articles_shortcode($atts) {
         $link_aria_label = !empty($args['link_aria_label']) ? " aria-label='" . esc_attr($args['link_aria_label']) . "'" : "";
         $featured_image = isset($post['_embedded']['wp:featuredmedia'][0]['source_url']) ? $post['_embedded']['wp:featuredmedia'][0]['source_url'] : '';
         $date_format = $args['format_date'];
-		
+        
         if ($args['date_format_type'] === 'human') {
             $date_published = 'Published ' . human_time_diff(strtotime($post['date']), current_time('timestamp')) . ' ago';
         } else {
             $date_published = date($date_format, strtotime($post['date']));
         }
-		
+        
         $category = isset($post['_embedded']['wp:term'][0][0]['name']) ? $post['_embedded']['wp:term'][0][0]['name'] : '';
 
         $output .= '<li class="api-article">';
@@ -122,9 +125,9 @@ function api_articles_shortcode($atts) {
         }
         $output .= '</div>';
         if ($args['show_img'] == 'yes') {
-        $output .= '<figure class="news-card__img-wrapper">';
-        $output .= "<img src='" . esc_url($featured_image) . "' alt='' class='news-card__img'>";
-        $output .= '</figure>';
+            $output .= '<figure class="news-card__img-wrapper">';
+            $output .= "<img src='" . esc_url($featured_image) . "' alt='' class='news-card__img'>";
+            $output .= '</figure>';
         }
         $output .= '</article>';
         $output .= '</li>';
@@ -134,6 +137,5 @@ function api_articles_shortcode($atts) {
 
     return $output;
 }
-
 
 add_shortcode('api_articles', 'api_articles_shortcode');

@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 function api_articles_shortcode($atts) {
     $args = shortcode_atts(array(
         'endpoint' => '',
-        'count'=> 6,
+        'count' => 6,
         'offset' => 0,
         'format_date' => 'F d, Y',
         'post_type' => 'posts',
@@ -29,6 +29,9 @@ function api_articles_shortcode($atts) {
         'order_direction' => 'desc',  // default to descending order
         'taxonomy_name' => '',  // empty by default, specify the taxonomy name
         'taxonomy_value' => '',  // empty by default, specify the taxonomy value
+        'clear_cache' => 'no',  // option to clear cache
+        'cache_duration' => '15',  // default cache duration to 15 minutes
+        'timeout_message' => 'Refresh your browser for the latest content.'  // default timeout error message
     ), $atts);
 
     $args = array_map('sanitize_text_field', $args);
@@ -38,6 +41,42 @@ function api_articles_shortcode($atts) {
 
     if (empty($args['endpoint'])) {
         return 'Error: Please specify the API endpoint.';
+    }
+
+    // Determine cache duration in seconds
+    switch ($args['cache_duration']) {
+        case '0':
+            $cache_duration = 0;
+            break;
+        case '30':
+            $cache_duration = 30 * MINUTE_IN_SECONDS;
+            break;
+        case '60':
+            $cache_duration = HOUR_IN_SECONDS;
+            break;
+        case '120':
+            $cache_duration = 2 * HOUR_IN_SECONDS;
+            break;
+        case '15':
+        default:
+            $cache_duration = 15 * MINUTE_IN_SECONDS;
+            break;
+    }
+
+    // Generate a unique cache key based on the arguments
+    $cache_key = 'api_articles_' . md5(json_encode($args));
+
+    // Clear cache if requested
+    if ($args['clear_cache'] === 'yes') {
+        delete_transient($cache_key);
+    }
+
+    // Check if a cached response exists
+    $cached_response = get_transient($cache_key);
+
+    if ($cached_response !== false && $cache_duration != 0) {
+        // Return the cached response if it exists and caching is enabled
+        return $cached_response;
     }
 
     $category_query = '';
@@ -74,7 +113,7 @@ function api_articles_shortcode($atts) {
     // Check for cURL errors
     $http_code = wp_remote_retrieve_response_code($response);
     if ($http_code == 0) {
-        return 'Please refresh your browser to see the latest stories.';
+        return esc_html($args['timeout_message']);
     }
 
     $response_code = wp_remote_retrieve_response_code($response);
@@ -134,6 +173,11 @@ function api_articles_shortcode($atts) {
     }
 
     $output .= '</ul>';
+
+    // Cache the response for the specified duration
+    if ($cache_duration != 0) {
+        set_transient($cache_key, $output, $cache_duration);
+    }
 
     return $output;
 }

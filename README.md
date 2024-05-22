@@ -32,6 +32,10 @@ Add option to receive a single post by slug
 * restructured the code
 ## Version 2.1
 * add error message for cURL timeout issue
+## Version 2.2
+* add caching
+## Version 2.3
+* add caching and error message parameters
  ## Parameter
 
 * endpoint: Set the source (required)
@@ -50,11 +54,18 @@ Add option to receive a single post by slug
 * article_class: Add layout modifier - default is none
 * link_target: primarily to add _blank
 * link_aria_label: add a cusom aria-label especially if the link opens a new window
-
+* To set the cache duration:
+* 	•	cache_duration="0" for no cache
+* 	•	cache_duration="15" for 15 minutes
+* 	•	cache_duration="30" for 30 minutes
+* 	•	cache_duration="60" for 1 hour
+* 	•	cache_duration="120" for 2 hours
+* 	•	To set a custom timeout message, use the timeout_message attribute.
 
 ## Shortcode
 
 * [api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes" category="2" heading_level="h2"] 
+* as of 2.3[api_articles endpoint="https://example.com" cache_duration="30" timeout_message="The content is currently unavailable. Please try again later."]
 * echo do_shortcode('[api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes"]');
 
 ### Category List

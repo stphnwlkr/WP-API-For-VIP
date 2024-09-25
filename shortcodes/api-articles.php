@@ -100,9 +100,9 @@ function api_articles_shortcode($atts) {
     }
 
     if (!empty($args['post_slug'])) {
-        $response = vip_safe_wp_remote_get("{$args['endpoint']}/wp-json/wp/v2/{$args['post_type']}?_embed&slug={$args['post_slug']}");
+        $response = vip_safe_wp_remote_get("{$args['endpoint']}/wp-json/wp/v2/{$args['post_type']}?_embed&slug={$args['post_slug']}", false, 3, 3 );
     } else {
-        $response = vip_safe_wp_remote_get("{$args['endpoint']}/wp-json/wp/v2/{$args['post_type']}?_embed&per_page={$args['count']}&offset={$args['offset']}{$category_query}{$category_exclude_query}{$tag_query}{$order_query}{$taxonomy_query}");
+        $response = vip_safe_wp_remote_get("{$args['endpoint']}/wp-json/wp/v2/{$args['post_type']}?_embed&per_page={$args['count']}&offset={$args['offset']}{$category_query}{$category_exclude_query}{$tag_query}{$order_query}{$taxonomy_query}", false, 3, 3 );
     }
 
     if (is_wp_error($response)) {

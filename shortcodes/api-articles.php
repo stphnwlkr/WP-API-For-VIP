@@ -164,8 +164,12 @@ function api_articles_shortcode($atts) {
         }
         $output .= '</div>';
         if ($args['show_img'] == 'yes') {
+            $alt_text = isset($post['_embedded']['wp:featuredmedia'][0]['alt_text']) && !empty($post['_embedded']['wp:featuredmedia'][0]['alt_text']) 
+                        ? esc_attr($post['_embedded']['wp:featuredmedia'][0]['alt_text']) 
+                        : 'Read ' . esc_attr($post['title']['rendered']);
+                        
             $output .= '<figure class="news-card__img-wrapper">';
-            $output .= "<img src='" . esc_url($featured_image) . "' alt='' class='news-card__img'>";
+            $output .= "<img src='" . esc_url($featured_image) . "' alt='" . $alt_text . "' class='news-card__img'>";
             $output .= '</figure>';
         }
         $output .= '</article>';

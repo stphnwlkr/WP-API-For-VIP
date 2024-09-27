@@ -37,7 +37,8 @@ Add option to receive a single post by slug
 ## Version 2.3
 * add caching and error message parameters
 ## Version 2.4
-* add 3 second timeout to replace default 1 second for vip_safe_wp_remote_get. See https://docs.wpvip.com/databases/optimize-queries/retrieving-remote-data/
+* 3 second timeout to replace default 1 second for vip_safe_wp_remote_get. See https://docs.wpvip.com/databases/optimize-queries/retrieving-remote-data/
+* add alt text to images
  ## Parameter
 
 * endpoint: Set the source (required)

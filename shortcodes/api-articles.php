@@ -148,9 +148,9 @@ function api_articles_shortcode($atts) {
         $category = isset($post['_embedded']['wp:term'][0][0]['name']) ? $post['_embedded']['wp:term'][0][0]['name'] : '';
 
         $output .= '<li class="api-article">';
-        $output .= '<article class="news-card">';
+        $output .= '<article class="news-card focus-parent" style="position:relative">';
         $output .= '<div class="news-card__content-wrapper">';
-        $output .= "<$heading class='news-card__title'><a href='" . esc_url($post['link']) . "' class='news-card__link'{$link_target}{$link_aria_label}>" . esc_html($post['title']['rendered']) . "</a></$heading>";
+        $output .= "<$heading class='news-card__title clickable-parent'><a href='" . esc_url($post['link']) . "' class='news-card__link'{$link_target}{$link_aria_label}>" . esc_html($post['title']['rendered']) . "</a></$heading>";
         $output .= '<div class="news-card__meta-wrapper">';
         if ($args['show_date'] == 'yes') {
             $output .= "<p class='news-card__date'><span>" . esc_html($date_published) . "</span></p>";

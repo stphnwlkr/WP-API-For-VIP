@@ -1,3 +1,5 @@
+![image](https://awb4wp.com/wp-content/uploads/2023/09/grid-post-layout-scaled.jpg)
+
 # API Element
 
 A shortcode that pulls articles using the WP REST API.  
@@ -96,6 +98,15 @@ Sample CSS is provided — the CSS should be reworked to combine both layouts in
 
 ## Shortcode Examples
 
-**Basic usage**
-```text
-[api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes" category="2" heading_level="h2"]
+* [api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes" category="2" heading_level="h2"] 
+* as of 2.3[api_articles endpoint="https://example.com" cache_duration="30" timeout_message="The content is currently unavailable. Please try again later."]
+* echo do_shortcode('[api_articles endpoint="https://example.com" count="5" show_excerpt="yes" show_date="yes"]');
+
+### Category List
+* [fetch_categories endpoint="https://your-wordpress-site.com"]
+# Note
+If you are on WordPress VIP, they have some modified functions, and you will want to refer to https://github.com/stphnwlkr/WP-API-For-VIP.
+
+
+# Disclaimer
+This code is provided as is. Every attempt has been made to provide good code, but there is no expressed warranty or guarantee. Test the code prior to using it on a production site.

@@ -2,7 +2,7 @@
 /*
 * Plugin Name: WP API Articles
 * Description: Retrieves the latest articles from a specified WordPress API endpoint.
-* Version: 2.4
+* Version: 2.5
 * Plugin URI: https://github.com/stphnwlkr/WP-API-For-VIP
 * Requires at least: 6.0
 * Requires PHP:      8.0
